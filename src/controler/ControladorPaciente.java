@@ -54,15 +54,15 @@ public class ControladorPaciente {
     }
     
     public void removerPaciente(String nome){
-        System.out.println("cadastrar: "+nome);
+        System.out.println("remover: "+nome);
         listaRemover.add(nome);
+        System.out.println("remover isEmpty?: "+listaRemover.isEmpty()+" Size: "+listaRemover.size());
     }
     
     public void cadastrarPaciente(String nome, String cpf){
         String cadastro = nome + ":"+cpf;
         listaCadastrar.add(cadastro);
-        System.out.println("cadastrar: "+listaCadastrar.getFirst());
-        System.out.println("cadastrar isEmpty?: "+listaCadastrar.isEmpty());
+        System.out.println("cadastrar isEmpty?: "+listaCadastrar.isEmpty()+" Size: "+listaCadastrar.size());
         
     }
 

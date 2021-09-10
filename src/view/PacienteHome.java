@@ -29,12 +29,7 @@ public class PacienteHome extends javax.swing.JFrame {
     public PacienteHome() throws IOException {
         initComponents();
         controlador= ControladorPaciente.getInstancia();
-        Servidor server = new Servidor();
-        if(!controlador.getListaCadastrar().isEmpty()){
-            for(int i=0; i<controlador.getListaCadastrar().size();i++){
-                jComboBox1.addItem(controlador.getListaCadastrar().get(i));
-            }
-        }
+        Servidor server = new Servidor(5023);
     }
 
     /**
@@ -161,7 +156,7 @@ public class PacienteHome extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-   // public static void main(String args[]) {
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -186,7 +181,7 @@ public class PacienteHome extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-   /*     java.awt.EventQueue.invokeLater(new Runnable() {
+        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     new PacienteHome().setVisible(true);
@@ -195,7 +190,7 @@ public class PacienteHome extends javax.swing.JFrame {
                 }
             }
         });
-    }*/
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cadastrarRemover;
