@@ -180,12 +180,15 @@ public class CadastroERemocao extends javax.swing.JFrame {
         if(!pacienteCadastrar.getText().isEmpty() && !cpfPaciente.getText().isEmpty()){
             controlador.cadastrarPaciente(pacienteCadastrar.getText(), cpfPaciente.getText());
         }
+        cpfPaciente.setText(null);
+        pacienteCadastrar.setText(null);
     }//GEN-LAST:event_cadastrarActionPerformed
 
     private void removerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerActionPerformed
         if(!pacienteRemover.getText().isEmpty()){
             controlador.removerPaciente(pacienteRemover.getText());
         }
+        pacienteRemover.setText(null);
     }//GEN-LAST:event_removerActionPerformed
 
     private void cpfPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpfPacienteActionPerformed

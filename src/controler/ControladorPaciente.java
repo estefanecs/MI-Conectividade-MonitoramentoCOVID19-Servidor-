@@ -14,7 +14,13 @@
  */
 package controler;
 
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ControladorPaciente {
@@ -22,12 +28,13 @@ public class ControladorPaciente {
     private static ControladorPaciente instancia;
     private LinkedList<String> listaCadastrar;
     private LinkedList<String> listaRemover;
-    private LinkedList<JSONObject> atualizacoes;
+    private LinkedList<String> atualizacoes;
      
 
     public ControladorPaciente() {
        listaCadastrar = new LinkedList();
        listaRemover = new LinkedList();
+       atualizacoes =new LinkedList();
     }
     
     public static synchronized ControladorPaciente getInstancia(){
@@ -66,14 +73,19 @@ public class ControladorPaciente {
         
     }
 
-    public LinkedList<JSONObject> getAtualizacoes() {
+    public LinkedList<String> getAtualizacoes() {
         return atualizacoes;
     }
 
-    public void setAtualizacoes(LinkedList<JSONObject> atualizacoes) {
+    public void setAtualizacoes(LinkedList<String> atualizacoes) {
         this.atualizacoes = atualizacoes;
     }
-
+    
+    
+    public void atualizar(String dado) throws IOException, JSONException{
+       this.atualizacoes.add(dado);
+       System.out.println("atualizei dados: "+dado+" Size dados "+atualizacoes.size());    
+    }
     
     
 }

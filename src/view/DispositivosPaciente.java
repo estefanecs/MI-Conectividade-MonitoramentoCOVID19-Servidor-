@@ -5,20 +5,36 @@
  */
 package view;
 
+import controler.ControladorPaciente;
+import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.json.JSONException;
+
 /**
  *
  * @author casa
  */
-public class DispositivosPaciente extends javax.swing.JFrame {
-
+public class DispositivosPaciente extends javax.swing.JFrame implements Runnable {
+    
+    private String Paciente;
+    private ControladorPaciente controlador;
     /**
      * Creates new form DispositivosPaciente
      */
     public DispositivosPaciente(String nome) {
         initComponents();
+        Paciente = nome;
         nomePaciente.setText("Nome: "+nome);
+        controlador= ControladorPaciente.getInstancia();
+        Thread t =new Thread(this);
+        t.start();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,11 +51,11 @@ public class DispositivosPaciente extends javax.swing.JFrame {
         respiracao = new javax.swing.JLabel();
         pressao = new javax.swing.JLabel();
         saturacao = new javax.swing.JLabel();
-        frespiratoria = new javax.swing.JSpinner();
-        JStemperatura = new javax.swing.JSpinner();
-        cardiaca2 = new javax.swing.JSpinner();
-        JSpressao1 = new javax.swing.JSpinner();
-        JSsaturacao1 = new javax.swing.JSpinner();
+        sinalTemp = new javax.swing.JSpinner();
+        sinalfcardiaca = new javax.swing.JSpinner();
+        sinalResp = new javax.swing.JSpinner();
+        sinalPressao = new javax.swing.JSpinner();
+        sinalSaturacao = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -66,6 +82,46 @@ public class DispositivosPaciente extends javax.swing.JFrame {
         saturacao.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         saturacao.setText("SATURAÇÃO DE OXIGÊNIO:");
 
+        sinalTemp.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        sinalTemp.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
+        sinalTemp.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sinalTempStateChanged(evt);
+            }
+        });
+
+        sinalfcardiaca.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        sinalfcardiaca.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
+        sinalfcardiaca.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sinalfcardiacaStateChanged(evt);
+            }
+        });
+
+        sinalResp.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        sinalResp.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
+        sinalResp.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sinalRespStateChanged(evt);
+            }
+        });
+
+        sinalPressao.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        sinalPressao.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
+        sinalPressao.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sinalPressaoStateChanged(evt);
+            }
+        });
+
+        sinalSaturacao.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        sinalSaturacao.setModel(new javax.swing.SpinnerNumberModel(0.0f, 0.0f, null, 1.0f));
+        sinalSaturacao.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                sinalSaturacaoStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -81,7 +137,7 @@ public class DispositivosPaciente extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(saturacao)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(JSsaturacao1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(sinalSaturacao, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -91,45 +147,48 @@ public class DispositivosPaciente extends javax.swing.JFrame {
                                             .addComponent(freqCardiaca))
                                         .addGap(29, 29, 29))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(temperatura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(temperatura, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(frespiratoria, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(JSpressao1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cardiaca2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(JStemperatura, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(sinalTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sinalfcardiaca, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sinalResp, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sinalPressao, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap(112, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(62, 62, 62)
-                    .addComponent(nomePaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(240, Short.MAX_VALUE)))
+                    .addComponent(nomePaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(33, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(temperatura)
+                            .addComponent(sinalTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(freqCardiaca)
+                            .addComponent(sinalfcardiaca, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(32, 32, 32)
+                        .addComponent(respiracao))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(sinalResp, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pressao)
+                    .addComponent(sinalPressao, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(JStemperatura, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(temperatura))
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(freqCardiaca)
-                    .addComponent(cardiaca2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(frespiratoria, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(respiracao))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(JSpressao1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pressao))
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(JSsaturacao1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saturacao))
+                    .addComponent(saturacao)
+                    .addComponent(sinalSaturacao, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(67, 67, 67))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -140,21 +199,70 @@ public class DispositivosPaciente extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    
+    
+
+    private void sinalTempStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sinalTempStateChanged
+
+    }//GEN-LAST:event_sinalTempStateChanged
+
+    private void sinalfcardiacaStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sinalfcardiacaStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sinalfcardiacaStateChanged
+
+    private void sinalRespStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sinalRespStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sinalRespStateChanged
+
+    private void sinalPressaoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sinalPressaoStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sinalPressaoStateChanged
+
+    private void sinalSaturacaoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sinalSaturacaoStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sinalSaturacaoStateChanged
 
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSpinner JSpressao1;
-    private javax.swing.JSpinner JSsaturacao1;
-    private javax.swing.JSpinner JStemperatura;
-    private javax.swing.JSpinner cardiaca2;
     private javax.swing.JLabel freqCardiaca;
-    private javax.swing.JSpinner frespiratoria;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel nomePaciente;
     private javax.swing.JLabel pressao;
     private javax.swing.JLabel respiracao;
     private javax.swing.JLabel saturacao;
+    private javax.swing.JSpinner sinalPressao;
+    private javax.swing.JSpinner sinalResp;
+    private javax.swing.JSpinner sinalSaturacao;
+    private javax.swing.JSpinner sinalTemp;
+    private javax.swing.JSpinner sinalfcardiaca;
     private javax.swing.JLabel temperatura;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void run() {
+        int delay = 15000;   // delay de 5 seg.
+        int interval = 5000;  // intervalo de 1 seg.
+        Timer timer = new Timer();
+   
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                String dado = Paciente +":"+ sinalTemp.getValue()+ ":"+sinalfcardiaca.getValue()+":"+
+                        sinalResp.getValue()+":"+sinalPressao.getValue()+":"+sinalSaturacao.getValue();
+                System.out.println("dados: "+dado);
+                try {
+                    controlador.atualizar(dado);
+                     Thread.sleep(4000);
+                } catch (IOException ex) {
+                    Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (JSONException ex) {
+                    Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
+                }
+           }
+       }, delay, interval);
+   }
 }

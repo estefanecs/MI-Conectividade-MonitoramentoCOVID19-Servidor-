@@ -29,7 +29,7 @@ public class PacienteHome extends javax.swing.JFrame {
     public PacienteHome() throws IOException {
         initComponents();
         controlador= ControladorPaciente.getInstancia();
-        Servidor server = new Servidor(5023);
+        Servidor server = Servidor.getInstancia();
     }
 
     /**
@@ -50,6 +50,7 @@ public class PacienteHome extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel1.setText("Insira o nome do paciente");
@@ -137,6 +138,8 @@ public class PacienteHome extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
+    
     private void cadastrarRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastrarRemoverActionPerformed
         new CadastroERemocao().setVisible(true);
         this.setVisible(false);

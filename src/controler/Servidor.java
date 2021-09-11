@@ -32,9 +32,18 @@ public class Servidor implements Runnable {
     private ObjectOutputStream escritor;
     private ObjectInputStream leitor;
      private Thread t;
+    private static Servidor instancia;
+    
+    
+     public static synchronized Servidor getInstancia() throws IOException{
+        if (instancia == null){
+            instancia = new Servidor();
+        }
+        return instancia;
+    }
 
-    public Servidor(int porta) throws IOException {
-        this.servidor = new ServerSocket(porta);
+    public Servidor() throws IOException {
+        this.servidor = new ServerSocket(5023);
         this.controlador = ControladorPaciente.getInstancia();
         t = new Thread(this);
         t.start();
@@ -119,19 +128,23 @@ public class Servidor implements Runnable {
     public void atualizar() throws IOException, JSONException{
         System.out.println("s- entrei no segundo if");
         //Cria um objeto json
-        JSONObject dado = new JSONObject();
-        //preenche o objeto com os campos: metodos e dado
-        dado.put("Metodo", "PUT/atualizarSinais");
-        dado.put("Dado", controlador.getAtualizacoes().getFirst());
-        String resposta = dado.toString ();
-        System.out.println("dado da resposta "+resposta);
+        String dados = "nula";
+        if(!controlador.getAtualizacoes().isEmpty()){
+            System.out.println("S- controlador n vazio");
+            JSONObject dado = new JSONObject();
+            //preenche o objeto com os campos: metodos e dado
+            dado.put("Metodo", "PUT/atualizarSinais");
+            dado.put("Dado", controlador.getAtualizacoes().getFirst());
+            dados = dado.toString();
+            System.out.println("dado da resposta "+dados);
+            //Remove da lista o dado que foi enviado
+            controlador.getAtualizacoes().removeFirst();
+        }
         //envia os dados para o cliente
-        escritor.writeUTF(resposta);
+        escritor.writeUTF(dados);
         escritor.flush();
         escritor.close();
         System.out.println("S- enviado dado");
-        //Remove da lista o dado que foi enviado
-        controlador.getAtualizacoes().removeFirst();
     }
         
     //public static void main(String[] args) {
@@ -164,8 +177,8 @@ public class Servidor implements Runnable {
                      else if(dados[1].equals("removerPaciente")){
                         remover();
                     }
-                     else if(dados[1].equals("GET/atualizarSinais")){
-                        
+                     else if(dados[1].equals("atualizarSinais")){
+                        atualizar();
                     }
                 }
                 else if(dados[0].equals("POST")){
