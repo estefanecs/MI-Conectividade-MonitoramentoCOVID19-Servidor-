@@ -29,12 +29,14 @@ public class ControladorPaciente {
     private LinkedList<String> listaCadastrar;
     private LinkedList<String> listaRemover;
     private LinkedList<String> atualizacoes;
+    private LinkedList<JSONObject> mensagens;
      
 
     public ControladorPaciente() {
        listaCadastrar = new LinkedList();
        listaRemover = new LinkedList();
        atualizacoes =new LinkedList();
+       mensagens = new LinkedList();
     }
     
     public static synchronized ControladorPaciente getInstancia(){
@@ -80,12 +82,31 @@ public class ControladorPaciente {
     public void setAtualizacoes(LinkedList<String> atualizacoes) {
         this.atualizacoes = atualizacoes;
     }
-    
+
+    public LinkedList<JSONObject> getMensagens() {
+        return mensagens;
+    }
+
+    public void setMensagens(LinkedList<JSONObject> mensagens) {
+        this.mensagens = mensagens;
+    } 
     
     public void atualizar(String dado) throws IOException, JSONException{
        this.atualizacoes.add(dado);
        System.out.println("atualizei dados: "+dado+" Size dados "+atualizacoes.size());    
     }
     
+    public String atualizarMensagem(String nomePaciente) throws JSONException{
+        int count=0;
+        while (count < this.mensagens.size()) {
+            if (this.mensagens.get(count).getString("Paciente").equals(nomePaciente)){
+                String notificacao =this.mensagens.get(count).getString("Mensagem");
+                this.mensagens.remove(count);
+                return notificacao;
+            }
+            count++;
+        }
+        return null;
+    }
     
 }

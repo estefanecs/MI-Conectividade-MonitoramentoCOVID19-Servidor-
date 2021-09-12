@@ -146,6 +146,16 @@ public class Servidor implements Runnable {
         escritor.close();
         System.out.println("S- enviado dado");
     }
+    
+    public void notificar(String dados) throws JSONException{
+        System.out.println("Entrei em notificar");
+        String[] informacoes= dados.split(":");
+        JSONObject dado = new JSONObject();
+            //preenche o objeto com os campos: metodos e dado
+        dado.put("Paciente",informacoes[0]);
+        dado.put("Mensagem",informacoes[1]);
+        controlador.getMensagens().add(dado);
+    }
         
     //public static void main(String[] args) {
 @Override
@@ -182,7 +192,10 @@ public class Servidor implements Runnable {
                     }
                 }
                 else if(dados[0].equals("POST")){
-                    
+                    System.out.println("S- entrei no post");
+                    if(dados[1].equals("notificarPaciente")){
+                        notificar(dados[2]);
+                    }
                 }
                 escritor.close();
                 leitor.close();
