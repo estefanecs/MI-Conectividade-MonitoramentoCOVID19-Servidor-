@@ -1,7 +1,7 @@
 /**
  * Componente Curricular: Módulo Integrado de Concorrência e Conectividade
  * Autor: Estéfane Carmo de Souza
- * Data: /09/2021
+ * Data: 13/09/2021
  *
  * Declaro que este código foi elaborado por mim de forma individual e
  * não contém nenhum trecho de código de outro colega ou de outro autor,
@@ -16,10 +16,6 @@ package controler;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 

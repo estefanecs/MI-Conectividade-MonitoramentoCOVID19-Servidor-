@@ -258,19 +258,23 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
 
     @Override
     public void run() {
-        int delay = 10000;   // delay de 5 seg.
-        int interval = 5000;  // intervalo de 1 seg.
+        int delay = 10000;   // delay de 10 seg.
+        int intervalo = 5000;  // intervalo de 1 seg.
         Timer timer = new Timer();
    
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                //Cria a string dados com os campos de cada sinal vital
                 String dado = Paciente +":"+ sinalTemp.getValue()+ ":"+sinalfcardiaca.getValue()+":"+
                         sinalResp.getValue()+":"+sinalPressao.getValue()+":"+sinalSaturacao.getValue();
-                System.out.println("dados: "+dado);
+                //System.out.println("dados: "+dado);
                 try {
+                    //salva os dados de cada sinal vital, em uma lista do controlador
                     controlador.atualizar(dado);
+                    //exibe na tela mensagem de alerta, caso exista
                     mensagem.setText(controlador.atualizarMensagem(Paciente));
+                    //Dorme por 4 segundos
                     Thread.sleep(4000);
                 } catch (IOException ex) {
                     Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
@@ -280,6 +284,6 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
                     Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
                 }
            }
-       }, delay, interval);
+       }, delay, intervalo);
    }
 }

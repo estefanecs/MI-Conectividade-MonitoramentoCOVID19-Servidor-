@@ -1,31 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Componente Curricular: Módulo Integrado de Concorrência e Conectividade
+ * Autor: Estéfane Carmo de Souza
+ * Data: 13/09/2021
+ *
+ * Declaro que este código foi elaborado por mim de forma individual e
+ * não contém nenhum trecho de código de outro colega ou de outro autor,
+ * tais como provindos de livros e apostilas, e páginas ou documentos
+ * eletrônicos da Internet. Qualquer trecho de código de outra autoria que
+ * uma citação para o  não a minha está destacado com  autor e a fonte do
+ * código, e estou ciente que estes trechos não serão considerados para fins
+ * de avaliação. Alguns trechos do código podem coincidir com de outros
+ * colegas pois estes foram discutidos em sessões tutorias.
  */
 package controler;
 
-import controler.ControladorPaciente;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- *
- * @author casa
- */
+
 public class Servidor implements Runnable {
     private ServerSocket servidor;
     private ControladorPaciente controlador;
@@ -82,87 +79,85 @@ public class Servidor implements Runnable {
     }
      
     public void cadastrar() throws IOException, JSONException{
-        System.out.println("s- entrei no segundo if");
-         String dados = "nula";
-        //Cria um objeto json
+        String dados = "nula";
+        //Se houver pacientes na lista a serem cadastrados 
         if(!controlador.getListaCadastrar().isEmpty()){
+            //Cria um objeto json
             JSONObject dado = new JSONObject();
             //preenche o objeto com os campos: metodos e dado
             dado.put("Metodo", "POST/cadastrarPaciente");
-            //dado.put("Dado", "Ana:34474774");
             dado.put("Dado", controlador.getListaCadastrar().getFirst()+"\n");
+            //transforma o json para string
             dados = dado.toString ();
+            //remove o paciente da lista, que será enviado
             controlador.getListaCadastrar().removeFirst();
-            System.out.println("Lista de cadastro is empty? "+controlador.getListaCadastrar().isEmpty());
         }
         //envia os dados para o cliente
         escritor.writeUTF(dados);
         escritor.flush();
+        //fecha o buffer de escrita
         escritor.close();
         System.out.println("S- envio de dados concluida");
     }
        
     public void remover() throws IOException, JSONException{
-        System.out.println("s- entrei no segundo if de remover");
-        //Cria um objeto json
         String dados = "nula";
+        //Se houver pacientes na lista a serem removidos
         if(!controlador.getListaRemover().isEmpty()){
+            //Cria um objeto json
             JSONObject dado = new JSONObject();
             //preenche o objeto com os campos: metodos e dado
             dado.put("Metodo", "DELETE/removerPaciente");
-            //dado.put("Dado", "Ana:34474774");
             dado.put("Dado", controlador.getListaRemover().getFirst());
-            dados = dado.toString();
-            System.out.println("dado da resposta "+dados);
-            //Remove da lista o dado que foi enviado para remocao
+            dados = dado.toString();//transforma o json para string
+            //Remove da lista o dado que foi enviado para remoção
             controlador.getListaRemover().removeFirst();
-            System.out.println("Lista de remover is empty? "+controlador.getListaRemover().isEmpty());
         }
         //envia os dados para o cliente
         escritor.writeUTF(dados);
         escritor.flush();
+        //fecha o buffer de escrita
         escritor.close();
         System.out.println("S- enviado dado");
     }
         
     public void atualizar() throws IOException, JSONException{
-        System.out.println("s- entrei no segundo if");
-        //Cria um objeto json
         String dados = "nula";
+        //Se houver atualizacoes de dados na lista
         if(!controlador.getAtualizacoes().isEmpty()){
-            System.out.println("S- controlador n vazio");
+            //Cria um objeto json
             JSONObject dado = new JSONObject();
             //preenche o objeto com os campos: metodos e dado
             dado.put("Metodo", "PUT/atualizarSinais");
             dado.put("Dado", controlador.getAtualizacoes().getFirst());
-            dados = dado.toString();
-            System.out.println("dado da resposta "+dados);
+            dados = dado.toString();//transforma o json para string
             //Remove da lista o dado que foi enviado
             controlador.getAtualizacoes().removeFirst();
         }
         //envia os dados para o cliente
         escritor.writeUTF(dados);
         escritor.flush();
+        //fecha o buffer de escrita
         escritor.close();
         System.out.println("S- enviado dado");
     }
     
     public void notificar(String dados) throws JSONException{
-        System.out.println("Entrei em notificar");
+        //Separa a string recebida
         String[] informacoes= dados.split(":");
+        //cria o objeto json
         JSONObject dado = new JSONObject();
-            //preenche o objeto com os campos: metodos e dado
+        //preenche o objeto com os campos: Paciente e mensagem
         dado.put("Paciente",informacoes[0]);
         dado.put("Mensagem",informacoes[1]);
+        //adiciona o objeto json na lista do controlador de mensagens recebidas
         controlador.getMensagens().add(dado);
     }
         
-    //public static void main(String[] args) {
 @Override
     public void run() {
        try {
            while(true){
-                //Servidor_1 servidor = new Servidor(5023);
                 System.out.println("\n****************servidor criado***************************");
                 //conecta com cliente
                 Socket cliente= servidor.accept();
@@ -175,12 +170,11 @@ public class Servidor implements Runnable {
                 String requisicao = leitor.readUTF();
                 System.out.println("S- recebido do cliente "+ requisicao);
                 
-                 //separa a requisicao para analisar o método e a ação a ser realizada
+                //separa a requisicao para analisar o método e a ação a ser realizada
                 String[] dados= requisicao.split("/");
                 System.out.println("vetor 1 " +dados[0] +" vetor 2 "+dados[1]);
-                if(dados[0].equals("GET")){
-                    System.out.println("s- entrei no get");
-                    
+                //Se a requisição recebida for GET
+                if(dados[0].equals("GET")){         
                     if(dados[1].equals("cadastrarPaciente")){
                        cadastrar();
                     }
@@ -191,12 +185,13 @@ public class Servidor implements Runnable {
                         atualizar();
                     }
                 }
+                //Se a requisicao recebida for GET
                 else if(dados[0].equals("POST")){
-                    System.out.println("S- entrei no post");
                     if(dados[1].equals("notificarPaciente")){
                         notificar(dados[2]);
                     }
                 }
+                //Fecha o buffer de escrita e de leitura
                 escritor.close();
                 leitor.close();
            }
