@@ -1,25 +1,26 @@
+/**
+ * Componente Curricular: Módulo Integrado de Concorrência e Conectividade
+ * Autor: Estéfane Carmo de Souza
+ * Data: 13/09/2021
+ *
+ * Declaro que este código foi elaborado por mim de forma individual e
+ * não contém nenhum trecho de código de outro colega ou de outro autor,
+ * tais como provindos de livros e apostilas, e páginas ou documentos
+ * eletrônicos da Internet. Qualquer trecho de código de outra autoria que
+ * uma citação para o  não a minha está destacado com  autor e a fonte do
+ * código, e estou ciente que estes trechos não serão considerados para fins
+ * de avaliação. Alguns trechos do código podem coincidir com de outros
+ * colegas pois estes foram discutidos em sessões tutorias.
+ */
 package view;
 
-
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-import view.CadastroERemocao;
 import controler.ControladorPaciente;
 import controler.Servidor;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author casa
- */
+
 public class PacienteHome extends javax.swing.JFrame {
     
   private ControladorPaciente controlador;
@@ -29,8 +30,8 @@ public class PacienteHome extends javax.swing.JFrame {
     public PacienteHome() throws IOException {
         initComponents();
         this.setLocationRelativeTo(null);
-        controlador= ControladorPaciente.getInstancia();
-        Servidor server = Servidor.getInstancia();
+        controlador= ControladorPaciente.getInstancia(); //Obtem a instancia do controlador
+        Servidor server = Servidor.getInstancia(); //Obtem a instancia do servidor
     }
 
     /**
@@ -146,7 +147,7 @@ public class PacienteHome extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 
-    
+    //Botão que ao ser clicado, dá acesso a tela de cadastro e remoção
     private void cadastrarRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastrarRemoverActionPerformed
         new CadastroERemocao().setVisible(true);
         this.setVisible(false);
@@ -155,10 +156,11 @@ public class PacienteHome extends javax.swing.JFrame {
     private void nomePacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nomePacienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nomePacienteActionPerformed
-
+    
+    //Botão que ao ser clicado direciona para a tela dos dispositivos do paciente
     private void logarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logarActionPerformed
-        if(!nomePaciente.getText().isEmpty()){
-            String nome= nomePaciente.getText();
+        if(!nomePaciente.getText().isEmpty()){ //Se houver nome de paciente no campo
+            String nome= nomePaciente.getText(); //Salva o nome e envia para a tela de dispositivos
             new DispositivosPaciente(nome).setVisible(true);
         }
     }//GEN-LAST:event_logarActionPerformed

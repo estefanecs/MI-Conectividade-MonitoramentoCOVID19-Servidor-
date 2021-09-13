@@ -1,7 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Componente Curricular: Módulo Integrado de Concorrência e Conectividade
+ * Autor: Estéfane Carmo de Souza
+ * Data: 13/09/2021
+ *
+ * Declaro que este código foi elaborado por mim de forma individual e
+ * não contém nenhum trecho de código de outro colega ou de outro autor,
+ * tais como provindos de livros e apostilas, e páginas ou documentos
+ * eletrônicos da Internet. Qualquer trecho de código de outra autoria que
+ * uma citação para o  não a minha está destacado com  autor e a fonte do
+ * código, e estou ciente que estes trechos não serão considerados para fins
+ * de avaliação. Alguns trechos do código podem coincidir com de outros
+ * colegas pois estes foram discutidos em sessões tutorias.
  */
 package view;
 
@@ -11,14 +20,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.json.JSONException;
 
-/**
- *
- * @author casa
- */
 public class DispositivosPaciente extends javax.swing.JFrame implements Runnable {
     
     private String Paciente;
@@ -29,9 +32,10 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
     public DispositivosPaciente(String nome) {
         initComponents();
         this.setLocationRelativeTo(null);
-        Paciente = nome;
-        nomePaciente.setText("Paciente: "+nome);
-        controlador= ControladorPaciente.getInstancia();
+        Paciente = nome; //Salva o nome do paciente
+        nomePaciente.setText("Paciente: "+nome); //Exibe o nome do paciente selecionado
+        controlador= ControladorPaciente.getInstancia(); //obtém a instancia do controlador
+        //cria e inicializa a Thread
         Thread t =new Thread(this);
         t.start();
     }
@@ -256,6 +260,11 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
     private javax.swing.JLabel temperatura;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Método run da Thread. A cada intervalo de tempo, obtem os dados no campos
+     * de cada sinal vital salva os dados na lista atualizar do controlador e procura
+     * a existência de uma mensagem de alerta para o paciente, se existe, exibe na tela
+     */
     @Override
     public void run() {
         int delay = 10000;   // delay de 10 seg.

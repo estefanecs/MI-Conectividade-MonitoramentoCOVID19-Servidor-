@@ -19,6 +19,14 @@ import java.util.LinkedList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**Esta classe é para objetos do tipo ControladorPaciente, contendo seus atributos
+ * como lista de cadastrar, lista de remover, lista de atualizacoes, lista de 
+ * mensagens.
+ *
+ * Exemplo de uso:
+ *
+ * ControladorPaciente controlado= ControladorPaciente.getInstancia();
+ */
 public class ControladorPaciente {
     
     private static ControladorPaciente instancia;
@@ -27,7 +35,10 @@ public class ControladorPaciente {
     private LinkedList<String> atualizacoes;
     private LinkedList<JSONObject> mensagens;
      
-
+    /**
+     * Método construtor da classe. Instancia as lista de pacientes para cadastrar,
+     * pacientes para remover, de atualizacoes e de mensagens.
+     */
     public ControladorPaciente() {
        listaCadastrar = new LinkedList();
        listaRemover = new LinkedList();
@@ -35,70 +46,131 @@ public class ControladorPaciente {
        mensagens = new LinkedList();
     }
     
+    /**
+     * Método que retorna a única instancia do Controlador. Caso não exista, cria a
+     * mesma.
+     * @return ControladorPaciente- a instância do controlador
+     */
     public static synchronized ControladorPaciente getInstancia(){
         if (instancia == null){
             instancia = new ControladorPaciente();
         }
         return instancia;
     }
-
+    
+    /**
+     * Método que obtém a lista de pacientes para cadastrar
+     * @return listaCadastrar
+     */
     public LinkedList<String> getListaCadastrar() {
         return listaCadastrar;
     }
-
+    
+    /**
+     * Método que altera a lista de pacientes para cadastrar
+     * @param listaCadastrar - a nova lista
+     */
     public void setListaCadastrar(LinkedList<String> listaCadastrar) {
         this.listaCadastrar = listaCadastrar;
     }
-
+    
+    /**
+     * Método que retorna a lista de pacientes para remover
+     * @return listaRemover
+     */
     public LinkedList<String> getListaRemover() {
         return listaRemover;
     }
-
+    
+    /**
+     * Método que altera a lista de pacientes para remover
+     * @param listaRemover - a nova lista
+     */
     public void setListaRemover(LinkedList<String> listaRemover) {
         this.listaRemover = listaRemover;
     }
     
-    public void removerPaciente(String nome){
-        System.out.println("remover: "+nome);
-        listaRemover.add(nome);
-        System.out.println("remover isEmpty?: "+listaRemover.isEmpty()+" Size: "+listaRemover.size());
-    }
-    
-    public void cadastrarPaciente(String nome, String cpf){
-        String cadastro = nome + ":"+cpf;
-        listaCadastrar.add(cadastro);
-        System.out.println("cadastrar isEmpty?: "+listaCadastrar.isEmpty()+" Size: "+listaCadastrar.size());
-        
-    }
-
+    /**
+     * Método que retona a lista de atualizações a serem feitas
+     * @return atualizacoes
+     */
     public LinkedList<String> getAtualizacoes() {
         return atualizacoes;
     }
 
+    /**
+     * Método que altera a lista de atualizaçõess a serem feiras
+     * @param atualizacoes - nova lista
+     */
     public void setAtualizacoes(LinkedList<String> atualizacoes) {
         this.atualizacoes = atualizacoes;
     }
 
+    /**
+     * Método que retorna a lista de mensagens recebidas
+     * @return mensagens
+     */
     public LinkedList<JSONObject> getMensagens() {
         return mensagens;
     }
 
+    /**
+     * Método que altera a lista de mensagens
+     * @param mensagens - nova lista
+     */
     public void setMensagens(LinkedList<JSONObject> mensagens) {
         this.mensagens = mensagens;
     } 
     
+    /**
+     * Método adiciona na lista de pacientes a serem removidos, o nome do paciente
+     * @param nome - nome do paciente a ser adicionado na lista
+     */
+    public void removerPaciente(String nome){
+        listaRemover.add(nome);
+    }
+    
+    /**
+     * Método que adiciona na lista de pacientes a serem cadastrados, as informações
+     * de um paciente.
+     * @param nome - nome do paciente
+     * @param cpf - cpf do pacientes
+     */
+    public void cadastrarPaciente(String nome, String cpf){
+        String cadastro = nome + ":"+cpf; //concatena o nome e o cpf do paciente
+        listaCadastrar.add(cadastro); //adiciona na lista  
+    }
+    
+    /**
+     * Método que adiciona na lista de atualizações, os dados recebidos da interface.
+     * O dado recebido é composto pelo nome, temperatura, frequência cardíaca, 
+     * frequência respiratória, pressão e saturação do oxigênio
+     * @param dado - dado a ser adicionado na lista
+     * @throws IOException
+     * @throws JSONException 
+     */
     public void atualizar(String dado) throws IOException, JSONException{
        this.atualizacoes.add(dado);
+       
+       /*APAGAR DEPOIS SÓ PARA CONTROLE */
        System.out.println("atualizei dados: "+dado+" Size dados "+atualizacoes.size());    
     }
     
+    /**
+     * Método que atualiza na interface do paciente, a mensagem que o médico enviou
+     * @param nomePaciente - nome do paciente a ser procurado
+     * @return String - a mensagem recebida
+     * @throws JSONException 
+     */
     public String atualizarMensagem(String nomePaciente) throws JSONException{
         int count=0;
-        while (count < this.mensagens.size()) {
+        while (count < this.mensagens.size()) {//Até que a variavel seja menor que o tamanho da lista
+            //Se o nó da lista de mensagem tiver o nome do paciente
             if (this.mensagens.get(count).getString("Paciente").equals(nomePaciente)){
+                //Salva a notificacao enviada
                 String notificacao =this.mensagens.get(count).getString("Mensagem");
-                this.mensagens.remove(count);
-                return notificacao;
+                this.mensagens.remove(count);//remove
+                return notificacao;// retorna a mensagem para a interface
             }
             count++;
         }

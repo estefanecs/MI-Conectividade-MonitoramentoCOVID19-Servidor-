@@ -1,23 +1,25 @@
-package view;
-
-
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Componente Curricular: Módulo Integrado de Concorrência e Conectividade
+ * Autor: Estéfane Carmo de Souza
+ * Data: 13/09/2021
+ *
+ * Declaro que este código foi elaborado por mim de forma individual e
+ * não contém nenhum trecho de código de outro colega ou de outro autor,
+ * tais como provindos de livros e apostilas, e páginas ou documentos
+ * eletrônicos da Internet. Qualquer trecho de código de outra autoria que
+ * uma citação para o  não a minha está destacado com  autor e a fonte do
+ * código, e estou ciente que estes trechos não serão considerados para fins
+ * de avaliação. Alguns trechos do código podem coincidir com de outros
+ * colegas pois estes foram discutidos em sessões tutorias.
  */
-
+package view;
 
 import controler.ControladorPaciente;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author casa
- */
+
 public class CadastroERemocao extends javax.swing.JFrame {
 
     private ControladorPaciente controlador;
@@ -27,7 +29,7 @@ public class CadastroERemocao extends javax.swing.JFrame {
     public CadastroERemocao() {
         initComponents();
         this.setLocationRelativeTo(null);
-        controlador= ControladorPaciente.getInstancia();
+        controlador= ControladorPaciente.getInstancia(); //Obtem a instancia do controlador
     }
 
     /**
@@ -198,20 +200,26 @@ public class CadastroERemocao extends javax.swing.JFrame {
     private void pacienteCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pacienteCadastrarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_pacienteCadastrarActionPerformed
-
+    
+    //Botão para o cadastramento do paciente
     private void cadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cadastrarActionPerformed
+        //Se os campos nome e cpf estiverem preenchidos
         if(!pacienteCadastrar.getText().isEmpty() && !cpfPaciente.getText().isEmpty()){
+            //adiciona os dados na lista de cadastro
             controlador.cadastrarPaciente(pacienteCadastrar.getText(), cpfPaciente.getText());
         }
+        //Após o clique no botão, limpa os campos
         cpfPaciente.setText(null);
         pacienteCadastrar.setText(null);
     }//GEN-LAST:event_cadastrarActionPerformed
 
+    //Botão para remover um paciente
     private void removerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removerActionPerformed
-        if(!pacienteRemover.getText().isEmpty()){
+        if(!pacienteRemover.getText().isEmpty()){ //Se o campo de nome estiver preenchido
+            //Adiciona o nome na lista de remoção
             controlador.removerPaciente(pacienteRemover.getText());
         }
-        pacienteRemover.setText(null);
+        pacienteRemover.setText(null); //Após o clique, limpa o campo
     }//GEN-LAST:event_removerActionPerformed
 
     private void cpfPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpfPacienteActionPerformed

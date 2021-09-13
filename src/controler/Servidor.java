@@ -22,7 +22,6 @@ import java.net.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class Servidor implements Runnable {
     private ServerSocket servidor;
     private ControladorPaciente controlador;
@@ -31,53 +30,100 @@ public class Servidor implements Runnable {
      private Thread t;
     private static Servidor instancia;
     
-    
-     public static synchronized Servidor getInstancia() throws IOException{
+     /**
+     * Método que retorna a única instancia do Servior. Caso não exista, cria a
+     * mesma.
+     * @return Servidor- a instância do servidor
+     */
+    public static synchronized Servidor getInstancia() throws IOException{
         if (instancia == null){
             instancia = new Servidor();
         }
         return instancia;
     }
 
+    /**
+     * Método construtor da classe. Instancia o serverSocket, obtém a instância 
+     * do controlador, cria e inicia a thread
+     * @throws IOException 
+     */
     public Servidor() throws IOException {
         this.servidor = new ServerSocket(5023);
         this.controlador = ControladorPaciente.getInstancia();
         t = new Thread(this);
         t.start();
     }
-
+    
+    /**
+     * Método que retona a instancia do socket servidor
+     * @return servidor
+     */
     public ServerSocket getServidor() {
         return servidor;
     }
-
+    
+    /**
+     * Método que altera a instancia do socket servidor
+     * @param servidor - novo socket
+     */
     public void setServidor(ServerSocket servidor) {
         this.servidor = servidor;
     }
 
+    /**
+     * Método que retona o controlador de paciente
+     * @return controlador
+     */
     public ControladorPaciente getControlador() {
         return controlador;
     }
 
+    /**
+     * Método que altera o controlador de paciente
+     * @param controlador - novo controlador
+     */
     public void setControlador(ControladorPaciente controlador) {
         this.controlador = controlador;
     }
 
+    /**
+     * Método que retorna o buffer de escrita
+     * @return escritor
+     */
     public ObjectOutputStream getEscritor() {
         return escritor;
     }
 
+    /**
+     * Método que altera o buffer de escrita
+     * @param escritor - novo buffer
+     */
     public void setEscritor(ObjectOutputStream escritor) {
         this.escritor = escritor;
     }
-
+    
+    /**
+     * Método qe retorna o buffer de leitura
+     * @return leitor
+     */
     public ObjectInputStream getLeitor() {
         return leitor;
     }
 
+    /**
+     * Método que altera o buffer de leitura
+     * @param leitor - o novo buffer
+     */
     public void setLeitor(ObjectInputStream leitor) {
         this.leitor = leitor;
     }
-     
+    
+    /**
+     * Método para o envio da requisição de cadastramento de pacientes. Envia para
+     * a aplicação do médico o nome e cpf do paciente. É enviado 1 paciente por vez.
+     * @throws IOException
+     * @throws JSONException 
+     */
     public void cadastrar() throws IOException, JSONException{
         String dados = "nula";
         //Se houver pacientes na lista a serem cadastrados 
@@ -99,7 +145,13 @@ public class Servidor implements Runnable {
         escritor.close();
         System.out.println("S- envio de dados concluida");
     }
-       
+    
+    /**
+     * Método para o envio da requisição de remoção de pacientes. Envia para
+     * a aplicação do médico o nome do paciente. Envia 1 nome por vez.
+     * @throws IOException
+     * @throws JSONException 
+     */
     public void remover() throws IOException, JSONException{
         String dados = "nula";
         //Se houver pacientes na lista a serem removidos
@@ -120,7 +172,13 @@ public class Servidor implements Runnable {
         escritor.close();
         System.out.println("S- enviado dado");
     }
-        
+    
+    /**
+     * Método para o envio da requisição atualização dos sinais vitais de um 
+     * paciente. Envia para a aplicação do médico.
+     * @throws IOException
+     * @throws JSONException 
+     */
     public void atualizar() throws IOException, JSONException{
         String dados = "nula";
         //Se houver atualizacoes de dados na lista
@@ -142,6 +200,12 @@ public class Servidor implements Runnable {
         System.out.println("S- enviado dado");
     }
     
+    /**
+     * Método que trata o dado recebido da aplicação do médico, de uma requisição
+     * de notificação.
+     * @param dados
+     * @throws JSONException 
+     */
     public void notificar(String dados) throws JSONException{
         //Separa a string recebida
         String[] informacoes= dados.split(":");
@@ -150,10 +214,16 @@ public class Servidor implements Runnable {
         //preenche o objeto com os campos: Paciente e mensagem
         dado.put("Paciente",informacoes[0]);
         dado.put("Mensagem",informacoes[1]);
-        //adiciona o objeto json na lista do controlador de mensagens recebidas
+        //adiciona o objeto json na lista de mensagens recebidas, do controlador
         controlador.getMensagens().add(dado);
     }
-        
+
+ /**
+  * Método run do servidor. Fica sempre aguardando uma conexão com um cliente.
+  * Após a conexão, aguarda uma requisição do cliente. Se a requisição for do tipo 
+  * GET, busca o dado pedido pelo cliente e envia para o cliente. Se a requisição
+  * for POST, apenas repassa para o controlador ou interface o que foi recebido.
+  */
 @Override
     public void run() {
        try {
