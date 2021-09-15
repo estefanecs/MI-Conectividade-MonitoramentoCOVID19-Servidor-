@@ -268,7 +268,7 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
     @Override
     public void run() {
         int delay = 10000;   // delay de 10 seg.
-        int intervalo = 5000;  // intervalo de 1 seg.
+        int intervalo = 4000;  // intervalo de 4 seg.
         Timer timer = new Timer();
    
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -283,15 +283,15 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
                     controlador.atualizar(dado);
                     //exibe na tela mensagem de alerta, caso exista
                     mensagem.setText(controlador.atualizarMensagem(Paciente));
-                    //Dorme por 4 segundos
-                    Thread.sleep(4000);
+                    //Dorme por 2 segundos
+                    //Thread.sleep(2000);
                 } catch (IOException ex) {
                     Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (JSONException ex) {
                     Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
+                } /*catch (InterruptedException ex) {
                     Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                }*/
            }
        }, delay, intervalo);
    }

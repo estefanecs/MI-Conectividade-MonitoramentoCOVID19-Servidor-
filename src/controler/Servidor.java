@@ -242,7 +242,7 @@ public class Servidor implements Runnable {
                 
                 //separa a requisicao para analisar o método e a ação a ser realizada
                 String[] dados= requisicao.split("/");
-                System.out.println("vetor 1 " +dados[0] +" vetor 2 "+dados[1]);
+                
                 //Se a requisição recebida for GET
                 if(dados[0].equals("GET")){         
                     if(dados[1].equals("cadastrarPaciente")){
