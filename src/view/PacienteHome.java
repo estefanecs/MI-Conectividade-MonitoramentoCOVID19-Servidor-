@@ -17,6 +17,7 @@ package view;
 import controler.ControladorPaciente;
 import controler.Servidor;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 public class PacienteHome extends javax.swing.JFrame {
     
   private ControladorPaciente controlador;
+  private Semaphore semaforo;
     /**
      * Creates new form PacienteHome
      */
@@ -32,6 +34,7 @@ public class PacienteHome extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         controlador= ControladorPaciente.getInstancia(); //Obtem a instancia do controlador
         Servidor server = Servidor.getInstancia(); //Obtem a instancia do servidor
+        semaforo = new Semaphore(1); //Cria o semaforo
     }
 
     /**
@@ -161,7 +164,7 @@ public class PacienteHome extends javax.swing.JFrame {
     private void logarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logarActionPerformed
         if(!nomePaciente.getText().isEmpty()){ //Se houver nome de paciente no campo
             String nome= nomePaciente.getText(); //Salva o nome e envia para a tela de dispositivos
-            new DispositivosPaciente(nome).setVisible(true);
+            new DispositivosPaciente(nome, semaforo).setVisible(true);
         }
     }//GEN-LAST:event_logarActionPerformed
 

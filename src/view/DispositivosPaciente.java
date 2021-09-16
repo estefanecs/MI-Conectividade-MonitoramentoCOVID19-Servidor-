@@ -18,23 +18,28 @@ import controler.ControladorPaciente;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
 
 public class DispositivosPaciente extends javax.swing.JFrame implements Runnable {
     
-    private String Paciente;
-    private ControladorPaciente controlador;
+    private String Paciente; //Nome do paciente
+    private ControladorPaciente controlador; //Controlador da interface
+    private Semaphore semaforo; //Semaforo
+    private boolean statusAtualizacao=true; //Status que indica se a atualização foi salva
     /**
      * Creates new form DispositivosPaciente
      */
-    public DispositivosPaciente(String nome) {
+    public DispositivosPaciente(String nome, Semaphore semaforo) {
         initComponents();
         this.setLocationRelativeTo(null);
+        setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         Paciente = nome; //Salva o nome do paciente
         nomePaciente.setText("Paciente: "+nome); //Exibe o nome do paciente selecionado
         controlador= ControladorPaciente.getInstancia(); //obtém a instancia do controlador
+        this.semaforo= semaforo; //salva o semaforo recebido
         //cria e inicializa a Thread
         Thread t =new Thread(this);
         t.start();
@@ -267,32 +272,58 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
      */
     @Override
     public void run() {
-        int delay = 10000;   // delay de 10 seg.
-        int intervalo = 4000;  // intervalo de 4 seg.
-        Timer timer = new Timer();
+    //    int delay = 7000;   // delay de 10 seg.
+    //    int intervalo = 4000;  // intervalo de 4 seg.
+    //    Timer timer = new Timer();
    
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                //Cria a string dados com os campos de cada sinal vital
-                String dado = Paciente +":"+ sinalTemp.getValue()+ ":"+sinalfcardiaca.getValue()+":"+
-                        sinalResp.getValue()+":"+sinalPressao.getValue()+":"+sinalSaturacao.getValue();
-                //System.out.println("dados: "+dado);
-                try {
-                    //salva os dados de cada sinal vital, em uma lista do controlador
-                    controlador.atualizar(dado);
-                    //exibe na tela mensagem de alerta, caso exista
-                    mensagem.setText(controlador.atualizarMensagem(Paciente));
-                    //Dorme por 2 segundos
-                    //Thread.sleep(2000);
-                } catch (IOException ex) {
-                    Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (JSONException ex) {
-                    Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
-                } /*catch (InterruptedException ex) {
-                    Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
-           }
-       }, delay, intervalo);
+    //  timer.scheduleAtFixedRate(new TimerTask() {
+   //   @Override
+    //   public void run(){
+      //      statusAtualizacao=false;
+               while(statusAtualizacao){
+                    boolean ocupado= controlador.isThreadAtualizando(); //Verifica se há thread adicionando atualizacoes
+                    if(!ocupado){ //Se não houver thread adicionando atualizacoes
+                        try {
+                            semaforo.acquire(); //Entra na região critica e garante exclusividade
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        controlador.setThreadAtualizando(true);//Indica que há thread adicionando atualizações
+                        //Cria a string dados com os campos de cada sinal vital
+                        String dado = Paciente +":"+ sinalTemp.getValue()+ ":"+sinalfcardiaca.getValue()+":"+
+                                sinalResp.getValue()+":"+sinalPressao.getValue()+":"+sinalSaturacao.getValue();
+                        
+                        try {
+                            //salva os dados de cada sinal vital, em uma lista do controlador
+                            controlador.atualizar(dado);
+                            //exibe na tela mensagem de alerta, caso exista
+                            mensagem.setText(controlador.atualizarMensagem(Paciente));
+                            
+                        } catch (IOException ex) {
+                            Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (JSONException ex) {
+                            Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        semaforo.release(); //Sai da região critica
+                        controlador.setThreadAtualizando(false); //Libera o recurso
+                        try {
+                            //Dorme por 4 segundos
+                            Thread.sleep(4000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    else{//Se houver thread enviando dados, aguarda por 7 segundos
+                        try {
+                            Thread.sleep(7000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(DispositivosPaciente.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+              }
+                    
+          // }
+
+     // }, delay, intervalo);
    }
 }

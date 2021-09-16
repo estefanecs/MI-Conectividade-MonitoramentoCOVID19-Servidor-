@@ -23,12 +23,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Servidor implements Runnable {
-    private ServerSocket servidor;
-    private ControladorPaciente controlador;
-    private ObjectOutputStream escritor;
-    private ObjectInputStream leitor;
-     private Thread t;
-    private static Servidor instancia;
+    private ServerSocket servidor; //Socket
+    private ControladorPaciente controlador; //Controlador da interface
+    private ObjectOutputStream escritor; //Buffer de escrita
+    private ObjectInputStream leitor; //Buffer de saída
+     private Thread t; //Thread
+    private static Servidor instancia; //Instância da classe
     
      /**
      * Método que retorna a única instancia do Servior. Caso não exista, cria a
@@ -50,6 +50,7 @@ public class Servidor implements Runnable {
     public Servidor() throws IOException {
         this.servidor = new ServerSocket(5023);
         this.controlador = ControladorPaciente.getInstancia();
+        System.out.println("\n**********servidor criado**************");
         t = new Thread(this);
         t.start();
     }
@@ -132,7 +133,7 @@ public class Servidor implements Runnable {
             JSONObject dado = new JSONObject();
             //preenche o objeto com os campos: metodos e dado
             dado.put("Metodo", "POST/cadastrarPaciente");
-            dado.put("Dado", controlador.getListaCadastrar().getFirst()+"\n");
+            dado.put("Dado", controlador.getListaCadastrar().getFirst());
             //transforma o json para string
             dados = dado.toString ();
             //remove o paciente da lista, que será enviado
@@ -143,7 +144,7 @@ public class Servidor implements Runnable {
         escritor.flush();
         //fecha o buffer de escrita
         escritor.close();
-        System.out.println("S- envio de dados concluida");
+        System.out.println("Envio de dados concluida");
     }
     
     /**
@@ -170,7 +171,7 @@ public class Servidor implements Runnable {
         escritor.flush();
         //fecha o buffer de escrita
         escritor.close();
-        System.out.println("S- enviado dado");
+        System.out.println("Dados enviados");
     }
     
     /**
@@ -197,7 +198,7 @@ public class Servidor implements Runnable {
         escritor.flush();
         //fecha o buffer de escrita
         escritor.close();
-        System.out.println("S- enviado dado");
+        System.out.println("Dados enviados");
     }
     
     /**
@@ -228,7 +229,6 @@ public class Servidor implements Runnable {
     public void run() {
        try {
            while(true){
-                System.out.println("\n****************servidor criado***************************");
                 //conecta com cliente
                 Socket cliente= servidor.accept();
                 System.out.println("S- ouvindo "+servidor.getLocalPort()+ " Cliente: "+cliente.getInetAddress() );

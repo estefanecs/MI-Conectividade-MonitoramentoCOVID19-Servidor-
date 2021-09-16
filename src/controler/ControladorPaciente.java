@@ -29,11 +29,12 @@ import org.json.JSONObject;
  */
 public class ControladorPaciente {
     
-    private static ControladorPaciente instancia;
-    private LinkedList<String> listaCadastrar;
-    private LinkedList<String> listaRemover;
-    private LinkedList<String> atualizacoes;
-    private LinkedList<JSONObject> mensagens;
+    private static ControladorPaciente instancia; //Instancia da classe
+    private LinkedList<String> listaCadastrar; //Lista de pacientes a serem cadastrados
+    private LinkedList<String> listaRemover; //Lista com o nome do paciente a ser removido
+    private LinkedList<String> atualizacoes; //Lista com as atualizações dos sinais vitais
+    private LinkedList<JSONObject> mensagens; //Lista com as mensagens recebidas
+    private boolean threadAtualizando; //Variavel para indicar se há thread na lista de atualizações
      
     /**
      * Método construtor da classe. Instancia as lista de pacientes para cadastrar,
@@ -44,6 +45,7 @@ public class ControladorPaciente {
        listaRemover = new LinkedList();
        atualizacoes =new LinkedList();
        mensagens = new LinkedList();
+       threadAtualizando = false;
     }
     
     /**
@@ -121,6 +123,22 @@ public class ControladorPaciente {
     public void setMensagens(LinkedList<JSONObject> mensagens) {
         this.mensagens = mensagens;
     } 
+    
+    /**
+     * Método que retorna se há thread adicionando informações na lista de atualizações
+     * @return true - se tiver thread
+     */
+    public boolean isThreadAtualizando() {
+        return threadAtualizando;
+    }
+
+    /**
+     * Método que altera a informação de a thread está manipulando a lista de atualizações
+     * @param threadAtualizando - a nova informação
+     */
+    public void setThreadAtualizando(boolean threadAtualizando) {
+        this.threadAtualizando = threadAtualizando;
+    }
     
     /**
      * Método adiciona na lista de pacientes a serem removidos, o nome do paciente
