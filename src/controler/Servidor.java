@@ -23,29 +23,32 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Servidor implements Runnable {
+
     private ServerSocket servidor; //Socket
     private ControladorPaciente controlador; //Controlador da interface
     private ObjectOutputStream escritor; //Buffer de escrita
     private ObjectInputStream leitor; //Buffer de saída
-     private Thread t; //Thread
+    private Thread t; //Thread
     private static Servidor instancia; //Instância da classe
-    
-     /**
+
+    /**
      * Método que retorna a única instancia do Servior. Caso não exista, cria a
      * mesma.
+     *
      * @return Servidor- a instância do servidor
      */
-    public static synchronized Servidor getInstancia() throws IOException{
-        if (instancia == null){
+    public static synchronized Servidor getInstancia() throws IOException {
+        if (instancia == null) {
             instancia = new Servidor();
         }
         return instancia;
     }
 
     /**
-     * Método construtor da classe. Instancia o serverSocket, obtém a instância 
+     * Método construtor da classe. Instancia o serverSocket, obtém a instância
      * do controlador, cria e inicia a thread
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     public Servidor() throws IOException {
         this.servidor = new ServerSocket(5023);
@@ -54,17 +57,19 @@ public class Servidor implements Runnable {
         t = new Thread(this);
         t.start();
     }
-    
+
     /**
      * Método que retona a instancia do socket servidor
+     *
      * @return servidor
      */
     public ServerSocket getServidor() {
         return servidor;
     }
-    
+
     /**
      * Método que altera a instancia do socket servidor
+     *
      * @param servidor - novo socket
      */
     public void setServidor(ServerSocket servidor) {
@@ -73,6 +78,7 @@ public class Servidor implements Runnable {
 
     /**
      * Método que retona o controlador de paciente
+     *
      * @return controlador
      */
     public ControladorPaciente getControlador() {
@@ -81,6 +87,7 @@ public class Servidor implements Runnable {
 
     /**
      * Método que altera o controlador de paciente
+     *
      * @param controlador - novo controlador
      */
     public void setControlador(ControladorPaciente controlador) {
@@ -89,6 +96,7 @@ public class Servidor implements Runnable {
 
     /**
      * Método que retorna o buffer de escrita
+     *
      * @return escritor
      */
     public ObjectOutputStream getEscritor() {
@@ -97,14 +105,16 @@ public class Servidor implements Runnable {
 
     /**
      * Método que altera o buffer de escrita
+     *
      * @param escritor - novo buffer
      */
     public void setEscritor(ObjectOutputStream escritor) {
         this.escritor = escritor;
     }
-    
+
     /**
      * Método qe retorna o buffer de leitura
+     *
      * @return leitor
      */
     public ObjectInputStream getLeitor() {
@@ -113,29 +123,32 @@ public class Servidor implements Runnable {
 
     /**
      * Método que altera o buffer de leitura
+     *
      * @param leitor - o novo buffer
      */
     public void setLeitor(ObjectInputStream leitor) {
         this.leitor = leitor;
     }
-    
+
     /**
-     * Método para o envio da requisição de cadastramento de pacientes. Envia para
-     * a aplicação do médico o nome e cpf do paciente. É enviado 1 paciente por vez.
+     * Método para o envio da requisição de cadastramento de pacientes. Envia
+     * para a aplicação do médico o nome e cpf do paciente. É enviado 1 paciente
+     * por vez.
+     *
      * @throws IOException
-     * @throws JSONException 
+     * @throws JSONException
      */
-    public void cadastrar() throws IOException, JSONException{
+    public void cadastrar() throws IOException, JSONException {
         String dados = "nula";
         //Se houver pacientes na lista a serem cadastrados 
-        if(!controlador.getListaCadastrar().isEmpty()){
+        if (!controlador.getListaCadastrar().isEmpty()) {
             //Cria um objeto json
             JSONObject dado = new JSONObject();
             //preenche o objeto com os campos: metodos e dado
             dado.put("Metodo", "POST/cadastrarPaciente");
             dado.put("Dado", controlador.getListaCadastrar().getFirst());
             //transforma o json para string
-            dados = dado.toString ();
+            dados = dado.toString();
             //remove o paciente da lista, que será enviado
             controlador.getListaCadastrar().removeFirst();
         }
@@ -146,17 +159,18 @@ public class Servidor implements Runnable {
         escritor.close();
         System.out.println("Envio de dados concluida");
     }
-    
+
     /**
-     * Método para o envio da requisição de remoção de pacientes. Envia para
-     * a aplicação do médico o nome do paciente. Envia 1 nome por vez.
+     * Método para o envio da requisição de remoção de pacientes. Envia para a
+     * aplicação do médico o nome do paciente. Envia 1 nome por vez.
+     *
      * @throws IOException
-     * @throws JSONException 
+     * @throws JSONException
      */
-    public void remover() throws IOException, JSONException{
+    public void remover() throws IOException, JSONException {
         String dados = "nula";
         //Se houver pacientes na lista a serem removidos
-        if(!controlador.getListaRemover().isEmpty()){
+        if (!controlador.getListaRemover().isEmpty()) {
             //Cria um objeto json
             JSONObject dado = new JSONObject();
             //preenche o objeto com os campos: metodos e dado
@@ -173,17 +187,18 @@ public class Servidor implements Runnable {
         escritor.close();
         System.out.println("Dados enviados");
     }
-    
+
     /**
-     * Método para o envio da requisição atualização dos sinais vitais de um 
+     * Método para o envio da requisição atualização dos sinais vitais de um
      * paciente. Envia para a aplicação do médico.
+     *
      * @throws IOException
-     * @throws JSONException 
+     * @throws JSONException
      */
-    public void atualizar() throws IOException, JSONException{
+    public void atualizar() throws IOException, JSONException {
         String dados = "nula";
         //Se houver atualizacoes de dados na lista
-        if(!controlador.getAtualizacoes().isEmpty()){
+        if (!controlador.getAtualizacoes().isEmpty()) {
             //Cria um objeto json
             JSONObject dado = new JSONObject();
             //preenche o objeto com os campos: metodos e dado
@@ -200,75 +215,73 @@ public class Servidor implements Runnable {
         escritor.close();
         System.out.println("Dados enviados");
     }
-    
+
     /**
-     * Método que trata o dado recebido da aplicação do médico, de uma requisição
-     * de notificação.
+     * Método que trata o dado recebido da aplicação do médico, de uma
+     * requisição de notificação.
+     *
      * @param dados
-     * @throws JSONException 
+     * @throws JSONException
      */
-    public void notificar(String dados) throws JSONException{
+    public void notificar(String dados) throws JSONException {
         //Separa a string recebida
-        String[] informacoes= dados.split(":");
+        String[] informacoes = dados.split(":");
         //cria o objeto json
         JSONObject dado = new JSONObject();
         //preenche o objeto com os campos: Paciente e mensagem
-        dado.put("Paciente",informacoes[0]);
-        dado.put("Mensagem",informacoes[1]);
+        dado.put("Paciente", informacoes[0]);
+        dado.put("Mensagem", informacoes[1]);
         //adiciona o objeto json na lista de mensagens recebidas, do controlador
         controlador.getMensagens().add(dado);
     }
 
- /**
-  * Método run do servidor. Fica sempre aguardando uma conexão com um cliente.
-  * Após a conexão, aguarda uma requisição do cliente. Se a requisição for do tipo 
-  * GET, busca o dado pedido pelo cliente e envia para o cliente. Se a requisição
-  * for POST, apenas repassa para o controlador ou interface o que foi recebido.
-  */
-@Override
+    /**
+     * Método run do servidor. Fica sempre aguardando uma conexão com um
+     * cliente. Após a conexão, aguarda uma requisição do cliente. Se a
+     * requisição for do tipo GET, busca o dado pedido pelo cliente e envia para
+     * o cliente. Se a requisição for POST, apenas repassa para o controlador ou
+     * interface o que foi recebido.
+     */
+    @Override
     public void run() {
-       try {
-           while(true){
+        try {
+            while (true) {
                 //conecta com cliente
-                Socket cliente= servidor.accept();
-                System.out.println("S- ouvindo "+servidor.getLocalPort()+ " Cliente: "+cliente.getInetAddress() );
+                Socket cliente = servidor.accept();
+                System.out.println("S- ouvindo " + servidor.getLocalPort() + " Cliente: " + cliente.getInetAddress());
                 //cria o leitor e escritor para o envio e recebimento de dados
-                escritor= new ObjectOutputStream((cliente.getOutputStream()));
-                leitor= new ObjectInputStream((cliente.getInputStream())); 
-                        
+                escritor = new ObjectOutputStream((cliente.getOutputStream()));
+                leitor = new ObjectInputStream((cliente.getInputStream()));
+
                 //Ler a requisicao enviada pelo cliente
                 String requisicao = leitor.readUTF();
-                System.out.println("S- recebido do cliente "+ requisicao);
-                
+                System.out.println("S- recebido do cliente " + requisicao);
+
                 //separa a requisicao para analisar o método e a ação a ser realizada
-                String[] dados= requisicao.split("/");
-                
+                String[] dados = requisicao.split("/");
+
                 //Se a requisição recebida for GET
-                if(dados[0].equals("GET")){         
-                    if(dados[1].equals("cadastrarPaciente")){
-                       cadastrar();
-                    }
-                     else if(dados[1].equals("removerPaciente")){
+                if (dados[0].equals("GET")) {
+                    if (dados[1].equals("cadastrarPaciente")) {
+                        cadastrar();
+                    } else if (dados[1].equals("removerPaciente")) {
                         remover();
-                    }
-                     else if(dados[1].equals("atualizarSinais")){
+                    } else if (dados[1].equals("atualizarSinais")) {
                         atualizar();
                     }
-                }
-                //Se a requisicao recebida for GET
-                else if(dados[0].equals("POST")){
-                    if(dados[1].equals("notificarPaciente")){
+                } //Se a requisicao recebida for GET
+                else if (dados[0].equals("POST")) {
+                    if (dados[1].equals("notificarPaciente")) {
                         notificar(dados[2]);
                     }
                 }
                 //Fecha o buffer de escrita e de leitura
                 escritor.close();
                 leitor.close();
-           }
-    }
-    catch(Exception e) {
-       System.out.println("Erro no servidor: " + e.getMessage());
-    }
+            }
+        } catch (Exception e) {
+            System.out.println("Erro no servidor: " + e.getMessage());
+        }
 
-  }
+    }
 }
