@@ -41,7 +41,7 @@ public class ControladorPaciente {
      * Método construtor da classe. Instancia as lista de pacientes para
      * cadastrar, pacientes para remover, de atualizacoes e de mensagens.
      */
-    public ControladorPaciente() {
+    private ControladorPaciente() {
         listaCadastrar = new LinkedList();
         listaRemover = new LinkedList();
         atualizacoes = new LinkedList();

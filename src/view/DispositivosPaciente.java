@@ -15,6 +15,8 @@
 package view;
 
 import controler.ControladorPaciente;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
@@ -33,7 +35,7 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
     public DispositivosPaciente(String nome, Semaphore semaforo) {
         initComponents();
         this.setLocationRelativeTo(null);
-        setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        //setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
         Paciente = nome; //Salva o nome do paciente
         nomePaciente.setText("Paciente: "+nome); //Exibe o nome do paciente selecionado
         controlador= ControladorPaciente.getInstancia(); //obtém a instancia do controlador
@@ -72,6 +74,11 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
         setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jPanel1MouseExited(evt);
+            }
+        });
 
         temperatura.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         temperatura.setText("TEMPERATURA:");
@@ -242,6 +249,10 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
     private void sinalSaturacaoStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sinalSaturacaoStateChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_sinalSaturacaoStateChanged
+
+    private void jPanel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseExited
+       
+    }//GEN-LAST:event_jPanel1MouseExited
 
     
 

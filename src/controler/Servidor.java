@@ -37,9 +37,10 @@ public class Servidor implements Runnable {
      *
      * @return Servidor- a instância do servidor
      */
-    public static synchronized Servidor getInstancia() throws IOException {
+    public static synchronized Servidor getInstancia(String numeroPorta) throws IOException {
         if (instancia == null) {
-            instancia = new Servidor();
+            int porta = Integer.parseInt(numeroPorta);
+            instancia = new Servidor(porta);
         }
         return instancia;
     }
@@ -48,10 +49,11 @@ public class Servidor implements Runnable {
      * Método construtor da classe. Instancia o serverSocket, obtém a instância
      * do controlador, cria e inicia a thread
      *
+     * @param porta - numero da porta do servidr
      * @throws IOException
      */
-    public Servidor() throws IOException {
-        this.servidor = new ServerSocket(5023);
+    private Servidor(int porta) throws IOException {
+        this.servidor = new ServerSocket(porta);
         this.controlador = ControladorPaciente.getInstancia();
         System.out.println("\n**********servidor criado**************");
         t = new Thread(this);
