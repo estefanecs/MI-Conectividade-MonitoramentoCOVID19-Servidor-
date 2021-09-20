@@ -30,7 +30,9 @@ public class DispositivosPaciente extends javax.swing.JFrame implements Runnable
     private Semaphore semaforo; //Semaforo
     private boolean statusAtualizacao=true; //Status que indica se a atualização foi salva
     /**
-     * Creates new form DispositivosPaciente
+     * Cria a tela de DispositivosPaciente
+     * @param nome - nome do paciente
+     * @param semaforo - semaforo para controlar o acesso a lista
      */
     public DispositivosPaciente(String nome, Semaphore semaforo) {
         initComponents();

@@ -271,7 +271,7 @@ public class Servidor implements Runnable {
                     } else if (dados[1].equals("atualizarSinais")) {
                         atualizar();
                     }
-                } //Se a requisicao recebida for GET
+                } //Se a requisicao recebida for POST
                 else if (dados[0].equals("POST")) {
                     if (dados[1].equals("notificarPaciente")) {
                         notificar(dados[2]);
